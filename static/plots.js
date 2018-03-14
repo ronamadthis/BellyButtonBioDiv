@@ -80,76 +80,120 @@ function optionChanged(selectedValue){
 
 
 	Plotly.d3.json("/samples/"+selectedValue, function(error, response) {
-		
+        
         if (error) console.log(error);
-        console.log(response);
+        // console.log(response);
 
         var idSlice = response.otu_ids.slice(0,10);
         var valueSlice = response.sample_values.slice(0,10);
 
-        var pieIds = [];
-        var pieValues = [];
 
-        for (var i = 0; i < valueSlice.length; i++) {
-            if (valueSlice[i] != 0) {
-                pieIds.push(idSlice[i]);
-                pieValues.push(valueSlice[i]);
-            };
-        };
+// variables for the bubble plot
+        var bubbleIds = response.otu_ids;
+        var bubbleValues = response.sample_values;        // console.log(idSlice);
 
-        d3.json("/otu", function(error, response) {
-            if (error) console.log(error);
-         });   
+        // // console.log(valueSlice);
+        // var pieValues = [];
+        // console.log("bubbleIds:" + bubbleIds);
+        // console.log("bubblValues:" + bubbleValues);
+        // for (var i = 0; i < valueSlice.length; i++) {
+        //     if (valueSlice[i] != 0) {
+        //         pieIds.push(idSlice[i]);
+        //         pieValues.push(valueSlice[i]);
+        //     };
+        // };
+        // console.log("Pie Values"+pieValues);
+
+
+
+        var piedesc = [];
+        var bubbledesc = [];
+        d3.json("/otu", function(error, response2) {
+            if (error) console.log(error); 
             // Pie chart labels
-            var pieLabels = [];
-            for (var i = 0; i < pieIds.length; i++) {
-                pieLabels.push(response[pieIds[i]]);
+        // console.log(response2);         
+            for (var i = 0; i < idSlice.length; i++) {
+                piedesc.push(response2[idSlice[i]]);
             };
+            // console.log(piedesc);
+            for (var j = 0; j < bubbleIds.length; j++) {
 
-            var pieData = [{
-                values: pieValues,
-                labels: pieIds,
-                type: "pie",
-                hovertext: pieLabels
-            }];
+                bubbledesc.push(response2[bubbleIds[j]]);
+            }
+            console.log(bubbledesc);
+            });  
+        var pieData = [{
+            values: valueSlice,
+            labels: idSlice,
+            type: "pie",
+            text: piedesc,
+            hoverinfo: "label+value+text+percent",
+            textinfo: "percent"
+        }];
 
-            Plotly.newPlot("pie", pieData);
+        Plotly.newPlot("pie", pieData);
 
         // Bubble plot variables
 
-        var bubbleIds = [];
-        var bubbleValues = [];
 
-        for (var i = 0; i < response.sample_values.length; i++) {
-            if (response.sample_values[i] != 0) {
-                bubbleIds.push(response.otu_ids[i]);
-                bubbleValues.push(response.sample_values[i]);
-            };
-        };
+        
 
-            // Bubble plot labels
-            var bubbleLabels = [];
-            for (var i = 0; i < bubbleIds.length; i++) {
-                bubbleLabels.push(response[bubbleIds[i]]);
-            }
+ 
+ 
             var bubbleData = [{
                 x: bubbleIds,
                 y: bubbleValues,
                 mode: "markers",
-                text: bubbleLabels,
+                type:"scatter",
+                text: bubbledesc,
                 marker: {
                     size: bubbleValues,
                     color: bubbleIds.map(row=>row),
                     colorscale: "Rainbow"
-                }
+                },
+                hoverinfo:'x + y + text',
+                textinfo:'text'
+                
             }];
+            // console.log(bubbleData);            
             var bubbleLayout = {
                 xaxis: {
                     title: "OTU ID"
-                }
+                },
+                hovermode:"closest"
+
             };
 
-            Plotly.newPlot("bubble", bubbleData, bubbleLayout);
+
+        var layout = {
+
+            xaxis:{title:"OTU ID",zeroline:true, hoverformat: '.2r'},
+
+            yaxis:{title: "No. of germs in Sample",zeroline:true, hoverformat: '.2r'},
+
+            height: 500,
+
+            width:1200,
+
+            margin: {
+
+                l: 100,
+
+                r: 10,
+
+                b: 70,
+
+                t: 10,
+
+                pad: 5
+
+              },
+
+            hovermode: 'closest',
+
+        };
+
+            Plotly.newPlot("bubble", bubbleData, layout);
 
         });
 
@@ -161,7 +205,7 @@ function optionChanged(selectedValue){
     Plotly.d3.json("/wfreq/"+selectedValue, function(error, response) {
 
         if (error) console.log(error);
-        console.log(response);
+        // console.log(response);
         level = response
 	        // Trig to calc meter point
 		var degrees = 180 - (20*level),
@@ -170,7 +214,7 @@ function optionChanged(selectedValue){
 		var radians = degrees * Math.PI / 180;
 		var x = radius * Math.cos(radians);
 		var y = radius * Math.sin(radians);
-		console.log(degrees);
+		// console.log(degrees);
 		// Path: may have to change to create a better triangle
 		var mainPath = 'M -.0 -0.025 L .0 0.025 L ',
 		     pathX = String(x),
