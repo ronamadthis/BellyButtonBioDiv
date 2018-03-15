@@ -2,11 +2,11 @@
 
 
 
-var $sampleMetadata = document.getElementById("sampleMetadata");
+   var $sampleMetadata = document.getElementById("sampleMetadata");
 
 // var $bubble = document.getElementById("bubble");
 
-var $gauge = document.getElementById("gauge");
+   var $gauge = document.getElementById("gauge");
 
 // Create a drop down menu
 
@@ -83,7 +83,7 @@ function optionChanged(selectedValue){
         
         if (error) console.log(error);
         // console.log(response);
-
+        // Variable for pie chart
         var idSlice = response.otu_ids.slice(0,10);
         var valueSlice = response.sample_values.slice(0,10);
 
@@ -121,7 +121,7 @@ function optionChanged(selectedValue){
                 bubbledesc.push(response2[bubbleIds[j]]);
             }
             console.log(bubbledesc);
-            });  
+              
         var pieData = [{
             values: valueSlice,
             labels: idSlice,
@@ -134,9 +134,7 @@ function optionChanged(selectedValue){
         Plotly.newPlot("pie", pieData);
 
         // Bubble plot variables
-
-
-        
+   
 
  
  
@@ -151,9 +149,7 @@ function optionChanged(selectedValue){
                     color: bubbleIds.map(row=>row),
                     colorscale: "Rainbow"
                 },
-                hoverinfo:'x + y + text',
-                textinfo:'text'
-                
+                hovertext: bubbledesc,                
             }];
             // console.log(bubbleData);            
             var bubbleLayout = {
@@ -166,37 +162,22 @@ function optionChanged(selectedValue){
 
 
         var layout = {
-
             xaxis:{title:"OTU ID",zeroline:true, hoverformat: '.2r'},
-
             yaxis:{title: "No. of germs in Sample",zeroline:true, hoverformat: '.2r'},
-
             height: 500,
-
             width:1200,
-
             margin: {
-
                 l: 100,
-
                 r: 10,
-
                 b: 70,
-
                 t: 10,
-
                 pad: 5
-
               },
-
             hovermode: 'closest',
-
         };
-
             Plotly.newPlot("bubble", bubbleData, layout);
-
         });
-
+});
   
 
 
